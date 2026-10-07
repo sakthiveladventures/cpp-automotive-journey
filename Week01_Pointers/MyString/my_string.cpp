@@ -10,6 +10,12 @@ private:
 
 public:
     MyString(const char* input) {
+	if (input == nullptr) {
+	    len=0;
+	    data=new char[1];
+            data[0]='\0';
+	    return;
+	}
         len = strlen(input);
 	data = new char[len + 1];
 	strcpy(data, input);
