@@ -42,6 +42,30 @@ public:
 	strcpy(data, mystring.data);
     }
 
+    MyString& operator=(MyString&& myString) {
+	cout << "Move Assign" << endl;
+        if (this == &myString) {
+	    return *this;
+	}
+
+	delete[] data;
+	len = myString.len;
+	data = new char[len + 1];
+	strcpy(data, myString.data);
+	myString.data = nullptr;
+	myString.len = 0;
+	return *this;
+    }
+
+    MyString(MyString&& mystring) {
+	cout << "Move Ctor" << endl;
+	len = mystring.len;
+	data = new char[len + 1];
+	strcpy(data, mystring.data);
+	mystring.data = nullptr;
+	mystring.len = 0;
+    }
+
     ~MyString() {
 	cout << "Dtor: " << (data? data : "null") << " addr:" << (void*)data << endl;
 	delete[] data;
@@ -49,7 +73,11 @@ public:
 
     const char* getString() const {
 	return data;
-     }
+    }
+
+    const int getLength() {
+	return len;
+    }
 
 };
 
@@ -64,5 +92,9 @@ int main() {
     MyString s3 = "90 km/h";
     s2 = s3;
     cout << "After s2 changed: " << s1.getString() << " vs " << s2.getString() << endl;
+    MyString s4("VHAL");
+    MyString s5 = std::move(s4);
+    std::cout << "s4 len: " << s4.getLength() << " s5: " << s5.getString() << "\n";
+    // s1 len should be 0, s2 = VHAL
     return 0;
 }
